@@ -19,15 +19,28 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from api.views import PostViewSet, CommentViewSet, FollowViewSet, SearchViewSet
 
-# Regex for post_id and comment_id
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='post')
-router.register(r'posts/(?P<post_id>\d+)/comments', CommentViewSet, basename='comment')
-router.register(r'users/(?P<pk>\d+)/follow', FollowViewSet, basename='follow')
 router.register(r'search/users', SearchViewSet, basename='search')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/auth/', include('rest_framework.urls')),
+    
+    # Manual routes for nested endpoints without regex
+     path('posts/<int:post_id>/comments/', CommentViewSet.as_view({
+        'get': 'list',
+        'post': 'create'
+    })),
+    path('posts/<int:post_id>/comments/<int:pk>/', CommentViewSet.as_view({
+        'get': 'retrieve',
+        'put': 'update',
+        'patch': 'partial_update',
+        'delete': 'destroy'
+    })),
+    path('users/<int:pk>/follow/', FollowViewSet.as_view({
+        'post': 'follow',
+        'delete': 'unfollow'
+    })),
 ]
