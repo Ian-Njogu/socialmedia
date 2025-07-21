@@ -4,7 +4,7 @@ from .models import Follow, Post, Comment, Like
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = 'users.User'  # Assuming User model is in users app
-        fields = ['id', 'username', 'profile_picture', 'bio']
+        fields = ['__all__']  # Include all fields from the User model
         
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

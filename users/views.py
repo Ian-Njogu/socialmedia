@@ -2,14 +2,12 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login, logout
-from users.serializers import RegisterSerializer, LoginSerializer
-from users.models import User
+from .serializers import UserSerializer, LoginSerializer, RegisterSerializer
 
-# Create your views here.
-
+# create your views here.
 
 class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
+    serializer_class = RegisterSerializer  # Using RegisterSerializer from users/serializers.py
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
@@ -18,7 +16,7 @@ class RegisterView(generics.CreateAPIView):
         login(self.request, user)
 
 class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
+    serializer_class = LoginSerializer  # Using LoginSerializer from users/serializers.py
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -29,7 +27,7 @@ class LoginView(generics.GenericAPIView):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
-            'user': UserSerializer(user).data
+            'user': UserSerializer(user).data  # Using UserSerializer from users/serializers.py
         })
 
 class LogoutView(generics.GenericAPIView):
